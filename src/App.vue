@@ -19,7 +19,7 @@ created() {
   axios
     .get("https://rickandmortyapi.com/api/character", {
       params: {
-        id: 20,
+        id: 21,
         offset:0,
     },
   })
