@@ -4,6 +4,7 @@ import AppHeader from "./components/AppHeader.vue";
 import AppMain from "./components/AppMain.vue";
 import AppChar from "./components/AppChar.vue";
 import AppSearch from "./components/AppSearch.vue";
+import {store} from "./store";
 
 export default {
   components: {
@@ -14,29 +15,38 @@ export default {
   },
   data() {
     return {
+      store,
       charArray: [],
     };
   },
   created() {
-    axios
-      .get("https://rickandmortyapi.com/api/character", {
-        params: {
-          id: 21,
-          offset: 0,
-        },
-      })
-      .then((resp) => {
-        this.charArray = resp.data.results;
-        console.log(this.charArray);
-      });
+
   },
 
   methods: {
     getStatus() {
-      console.log("stoCambinado");
+
+      const paramsObj = {
+        num: 20,
+      };
+
+      if (this.store.selectedStatus !== "All") {
+        paramsObj.status = this.store.selectedStatus;
+      }
+
+      console.log("stoCambinado", this.store.selectedStatus);
+
+     axios.get("https://rickandmortyapi.com/api/character", {
+      params: paramsObj,
+
+     }).then((resp) => {
+      this.charArray = resp.data.results;
+      this.store.charList = resp.data.results
+     });
       // Costuriamo i parametri per la chiamata axios
       //   const paramsObj = {
       // }
+
     }
   },
 
@@ -45,7 +55,7 @@ export default {
 
 <template>
   <AppHeader />
-  <AppSearch @filter="getStatus()" />
+  <AppSearch @filter="getStatus" />
   <AppMain :charArray="charArray" />
 
 </template>
